@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Core Roles and Activities (Flip Cards)</title>
+    <!-- Load Tailwind CSS --><script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        
+        /* Brand Colors */
+        :root {
+            --color-primary: #532A8C; /* Dark Purple */
+            --color-secondary: #9D8ABB; /* Medium Purple */
+            --color-accent-green: #7ABF49; /* Bright Green - now used only for the border on back */
+            --color-bg: #F2F2F2; /* Light Grey */
+            --color-highlight: #C3ACE8; /* Light Purple */
+            --color-text-dark: #333333; /* Dark Gray for readability */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--color-bg);
+        }
+
+        /* --- FLIP CARD STYLES --- */
+        .flip-card {
+            perspective: 1000px;
+            height: 180px; /* Reduced height for smaller footprint */
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        /* Flipping animation */
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden; /* Safari */
+            backface-visibility: hidden;
+            border-radius: 12px;
+            padding: 1rem; /* Slightly reduced padding */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .flip-card-front {
+            background-color: var(--color-primary); /* Dark Purple */
+            color: white;
+            border: 4px solid var(--color-secondary);
+        }
+        
+        .flip-card-front h3 {
+            font-size: 1.25rem; /* Reduced font size */
+            line-height: 1.2;
+            margin: 0;
+        }
+
+        .flip-card-back {
+            background-color: white; /* Changed to White */
+            color: var(--color-text-dark); /* Changed to Dark Gray */
+            transform: rotateY(180deg);
+            text-align: left;
+            border: 4px solid var(--color-accent-green); /* Green border maintained */
+        }
+        
+        .flip-card-back p {
+            font-weight: 500;
+            font-size: 0.9rem; /* Reduced font size */
+            line-height: 1.4;
+        }
+
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Main Content Container --><div class="max-w-6xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        
+        <header class="text-center mb-12">
+            <h1 class="text-4xl sm:text-5xl font-extrabold text-[--color-primary] mb-4 leading-tight">
+                Core Roles and Activities
+            </h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                Select each card to reveal the detailed description of the role's responsibilities.
+            </p>
+        </header>
+
+        <!-- Flip Card Grid Container --><div id="card-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Cards will be injected here by JavaScript --></div>
+
+        <div class="mt-16 p-6 bg-[--color-highlight] border-l-4 border-[--color-primary] rounded-lg shadow-md max-w-4xl mx-auto">
+            <h3 class="text-xl font-semibold text-[--color-primary] mb-2">Focus on IPC</h3>
+            <p class="text-gray-700">Remember, your role in **Infection Prevention and Control (IPC)** is non-negotiable and represents the highest legal and ethical duty to patient safety.</p>
+        </div>
+
+    </div>
+
+    <script>
+        // Data structure for the flip cards
+        const coreActivities = [
+            {
+                title: "Chairside Assistance",
+                description: "Working directly alongside the Dentist or other clinician, anticipating their needs, and managing suction (aspiration) during procedures."
+            },
+            {
+                title: "Clinical Preparation",
+                description: "Accurately setting up trays with the required instruments and materials for each procedure (e.g., fillings, crowns, extractions)."
+            },
+            {
+                title: "Infection Control (IPC)",
+                description: "This is a primary duty. It involves the meticulous cleaning, preparation, and sterilisation of all instruments and equipment using the autoclave, as well as keeping detailed IPC logs."
+            },
+            {
+                title: "Workflow Management",
+                description: "Ensuring the treatment room is clean, restocked, and ready between patients, and helping to manage the smooth flow of patients throughout the day."
+            },
+            {
+                title: "Patient Support",
+                description: "Comforting anxious patients, helping them settle into the chair, and delivering clear pre- and post-operative instructions as directed by the clinician."
+            },
+            {
+                title: "Radiography (X-rays)",
+                description: "Safely taking and processing dental radiographs (X-rays) like periapicals and bitewings, ensuring quality images for diagnosis."
+            },
+            {
+                title: "Inventory Control",
+                description: "Monitoring stock levels of clinical materials and supplies and notifying the Practice Manager or relevant staff when items need to be ordered."
+            },
+        ];
+
+        const cardGrid = document.getElementById('card-grid');
+
+        /**
+         * Generates the HTML for a single flip card.
+         * @param {Object} item - The activity object.
+         * @returns {string} The HTML string.
+         */
+        function createCardHtml(item) {
+            return `
+                <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner">
+                        <!-- Front of Card (The 'Quiz' Text) --><div class="flip-card-front">
+                            <h3 class="uppercase">${item.title}</h3>
+                        </div>
+                        
+                        <!-- Back of Card (The 'Answer' Text) --><div class="flip-card-back">
+                            <p>${item.description}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        /**
+         * Renders all flip cards into the grid container.
+         */
+        function renderCards() {
+            cardGrid.innerHTML = coreActivities.map(createCardHtml).join('');
+        }
+
+        // Initialize the activity on page load
+        window.onload = renderCards;
+    </script>
+</body>
+</html>
